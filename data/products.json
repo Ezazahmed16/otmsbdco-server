@@ -1,0 +1,34 @@
+[
+    {
+        "title": "One",
+        "product_name": "ICU Bed",
+        "product_description": "One",
+        "product_features": "One",
+        "product_prices": "100k",
+        "product_images": "https://images.freeimages.com/images/large-previews/c3a/hospital-7-1518169.jpg"
+    },
+    {
+        "title": "One",
+        "product_name": "ICU Bed",
+        "product_description": "One",
+        "product_features": "One",
+        "product_prices": "100k",
+        "product_images": "https://images.freeimages.com/images/large-previews/c3a/hospital-7-1518169.jpg"
+    },
+    {
+        "title": "Three",
+        "product_name": "ICU Bed",
+        "product_description": "One",
+        "product_features": "One",
+        "product_prices": "100k",
+        "product_images": "https://images.freeimages.com/images/large-previews/c3a/hospital-7-1518169.jpg"
+    },
+    {
+        "title": "Two",
+        "product_name": "ICU Bed",
+        "product_description": "One",
+        "product_features": "One",
+        "product_prices": "100k",
+        "product_images": "https://images.freeimages.com/images/large-previews/c3a/hospital-7-1518169.jpg"
+    }
+]
