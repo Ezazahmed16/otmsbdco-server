@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const { MongoClient, ObjectId } = require('mongodb');
-// const ObjectId = require('mongodb').ObjectId;
 
 
 const port = process.env.PORT || 5000;
@@ -15,8 +14,7 @@ require('dotenv').config();
 
 
 // Connection URI Mongodb
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cegkufg.mongodb.net/`;
-// const uri = 'mongodb://localhost:27017';
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xeq99py.mongodb.net/`;
 
 // Create a new MongoClient
 const client = new MongoClient(uri);
