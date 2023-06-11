@@ -1,17 +1,15 @@
-const express = require('express')
-const app = express()
-const cors = require('cors')
+const express = require('express');
+const app = express();
+const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
-
 
 const port = process.env.PORT || 5000;
 
-//middleware
+// Middleware
 app.use(cors());
 app.use(express.json());
 
 require('dotenv').config();
-
 
 // Connection URI Mongodb
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xeq99py.mongodb.net/`;
@@ -21,116 +19,155 @@ const client = new MongoClient(uri);
 
 async function run() {
   try {
+    await client.connect();
+
     const servicesCategories = client.db('products').collection('categories');
     const servicesProducts = client.db('products').collection('product');
     const usersCollection = client.db('products').collection('usersCollection');
 
     // GET categories
     app.get('/categories', async (req, res) => {
-      const query = {}
-      const cursor = servicesCategories.find(query)
-      const categories = await cursor.toArray()
-      res.send(categories)
-    })
-
-    //Get all products
-    app.get('/products', async (req, res) => {
-      const query = {}
-      const cursor = servicesProducts.find(query)
-      const products = await cursor.toArray()
-      res.send(products);
-    })
-
-    // //Get product by categorie title
-    app.get('/products/:title', async (req, res) => {
-      const title = req.params.title;
-      const query = { 'title': title }
-      const cursor = servicesProducts.find(query)
-      const products = await cursor.toArray()
-      res.send(products)
-    })
-
-    //Get product data by id
-    app.get('/products/product/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await servicesProducts.findOne(query);
-
-      res.json(result);
-    }) 
-
-    //delete categories by id
-    app.delete('/categories/:id', async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await servicesCategories.deleteOne(filter);
-      res.send(result);
-    })
-    // Add Categories 
-    app.post('/categories', async (req, res) => {
-      const categorie = req.body;
-      const result = await servicesCategories.insertOne(categorie);
-      res.send(result);
+      try {
+        const categories = await servicesCategories.find({}).toArray();
+        res.json(categories);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
     });
 
-    //delete product by id
+    // Get all products
+    app.get('/products', async (req, res) => {
+      try {
+        const products = await servicesProducts.find({}).toArray();
+        res.json(products);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
+    // Get product by category title
+    app.get('/products/:title', async (req, res) => {
+      try {
+        const { title } = req.params;
+        const query = { title };
+        const products = await servicesProducts.find(query).toArray();
+        res.json(products);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
+    // Get product data by id
+    app.get('/products/product/:id', async (req, res) => {
+      try {
+        const { id } = req.params;
+        const query = { _id: new ObjectId(id) };
+        const result = await servicesProducts.findOne(query);
+
+        res.json(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
+    // Delete categories by id
+    app.delete('/categories/:id', async (req, res) => {
+      try {
+        const { id } = req.params;
+        const filter = { _id: new ObjectId(id) };
+        const result = await servicesCategories.deleteOne(filter);
+        res.json({ message: 'Category deleted successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
+    // Add Categories
+    app.post('/categories', async (req, res) => {
+      try {
+        const categorie = req.body;
+        const result = await servicesCategories.insertOne(categorie);
+        res.json({ message: 'Category added successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
+    // Delete product by id
     app.delete('/products/:id', async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await servicesProducts.deleteOne(filter);
-      res.send(result);
-    })
-    // Add Product 
+      try {
+        const { id } = req.params;
+        const filter = { _id: new ObjectId(id) };
+        const result = await servicesProducts.deleteOne(filter);
+        res.json({ message: 'Product deleted successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
+    // Add Product
     app.post('/products', async (req, res) => {
-      const product = req.body;
-      const result = await servicesProducts.insertOne(product);
-      res.send(result);
+      try {
+        const product = req.body;
+        const result = await servicesProducts.insertOne(product);
+        res.json({ message: 'Product added successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
     });
 
     // Admin
     app.get('/users', async (req, res) => {
-      const users = {}
-      const collection = usersCollection.find(users);
-      const result = await collection.toArray()
-      res.send(result);
+      try {
+        const users = await usersCollection.find({}).toArray();
+        res.json(users);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
     });
 
     app.post('/users', async (req, res) => {
-      const users = req.body;
-      const result = await usersCollection.insertOne(users);
-      res.send(result);
+      try {
+        const users = req.body;
+        const result = await usersCollection.insertOne(users);
+        res.json({ message: 'User added successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
     });
 
     app.get('/users/admin/:email', async (req, res) => {
-      const email = req.params.email;
-      const query = { email }
-      const user = await usersCollection.findOne(query);
-      res.send({ isAdmin: user?.isAdmin === 'admin' });
-    })
-
-
-
-  } catch (e) {
-    console.error(e);
-  } finally {
-    // await client.close();
+      try {
+        const { email } = req.params;
+        const query = { email };
+        const user = await usersCollection.findOne(query);
+        res.json({ isAdmin: user?.isAdmin === 'admin' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+  } catch (error) {
+    console.error(error);
   }
 }
 
 run().catch(console.error);
 
-
-//Get product data by categorie id
-// app.get('/products/:id', (req, res ) => {
-//   const id = req.params.id;
-//   const selectedProduct = products.filter(p => p.categorie_id == id)
-//   res.send(selectedProduct)
-// });
-
 app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+  res.send('Hello World!');
+});
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+  console.log(`Example app listening on port ${port}`);
+});
