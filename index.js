@@ -111,8 +111,8 @@ async function run() {
       res.json({ isAdmin: user?.isAdmin === 'admin' });
 
     });
+  }
 }
-
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
