@@ -13,7 +13,7 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xeq99py.mongodb.net/`;
 
 // Create a new MongoClient
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
   try {
@@ -111,16 +111,13 @@ async function run() {
       res.json({ isAdmin: user?.isAdmin === 'admin' });
 
     });
-  } catch (error) {
-    console.error(error);
-  }
 }
-
-run().catch(console.error);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+run().catch(console.error);
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
