@@ -16,107 +16,107 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
-  try {
-    await client.connect();
+  await client.connect();
 
-    const servicesCategories = client.db('products').collection('categories');
-    const servicesProducts = client.db('products').collection('product');
-    const usersCollection = client.db('products').collection('usersCollection');
+  const servicesCategories = client.db('products').collection('categories');
+  const servicesProducts = client.db('products').collection('product');
+  const usersCollection = client.db('products').collection('usersCollection');
 
-    // GET categories
-    app.get('/categories', async (req, res) => {
-      const categories = await servicesCategories.find({}).toArray();
-      res.json(categories);
+  // GET categories
+  app.get('/categories', async (req, res) => {
+    const categories = await servicesCategories.find({}).toArray();
+    res.json(categories);
 
-    });
+  });
 
-    // Get all products
-    app.get('/products', async (req, res) => {
-      const products = await servicesProducts.find({}).toArray();
-      res.json(products);
+  // Get all products
+  app.get('/products', async (req, res) => {
+    const products = await servicesProducts.find({}).toArray();
+    res.json(products);
 
-    });
+  });
 
-    // Get product by category title
-    app.get('/products/:title', async (req, res) => {
-      const { title } = req.params;
-      const query = { title };
-      const products = await servicesProducts.find(query).toArray();
-      res.json(products);
+  // Get product by category title
+  app.get('/products/:title', async (req, res) => {
+    const { title } = req.params;
+    const query = { title };
+    const products = await servicesProducts.find(query).toArray();
+    res.json(products);
 
-    });
+  });
 
-    // Get product data by id
-    app.get('/products/product/:id', async (req, res) => {
-      const { id } = req.params;
-      const query = { _id: new ObjectId(id) };
-      const result = await servicesProducts.findOne(query);
+  // Get product data by id
+  app.get('/products/product/:id', async (req, res) => {
+    const { id } = req.params;
+    const query = { _id: new ObjectId(id) };
+    const result = await servicesProducts.findOne(query);
 
-      res.json(result);
+    res.json(result);
 
-    });
+  });
 
-    // Delete categories by id
-    app.delete('/categories/:id', async (req, res) => {
-      const { id } = req.params;
-      const filter = { _id: new ObjectId(id) };
-      const result = await servicesCategories.deleteOne(filter);
-      res.json({ message: 'Category deleted successfully' });
+  // Delete categories by id
+  app.delete('/categories/:id', async (req, res) => {
+    const { id } = req.params;
+    const filter = { _id: new ObjectId(id) };
+    const result = await servicesCategories.deleteOne(filter);
+    res.json({ message: 'Category deleted successfully' });
 
-    });
+  });
 
-    // Add Categories
-    app.post('/categories', async (req, res) => {
-      const categorie = req.body;
-      const result = await servicesCategories.insertOne(categorie);
-      res.json({ message: 'Category added successfully' });
+  // Add Categories
+  app.post('/categories', async (req, res) => {
+    const categorie = req.body;
+    const result = await servicesCategories.insertOne(categorie);
+    res.json({ message: 'Category added successfully' });
 
-    });
+  });
 
-    // Delete product by id
-    app.delete('/products/:id', async (req, res) => {
-      const { id } = req.params;
-      const filter = { _id: new ObjectId(id) };
-      const result = await servicesProducts.deleteOne(filter);
-      res.json({ message: 'Product deleted successfully' });
+  // Delete product by id
+  app.delete('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    const filter = { _id: new ObjectId(id) };
+    const result = await servicesProducts.deleteOne(filter);
+    res.json({ message: 'Product deleted successfully' });
 
-    });
+  });
 
-    // Add Product
-    app.post('/products', async (req, res) => {
-      const product = req.body;
-      const result = await servicesProducts.insertOne(product);
-      res.json({ message: 'Product added successfully' });
+  // Add Product
+  app.post('/products', async (req, res) => {
+    const product = req.body;
+    const result = await servicesProducts.insertOne(product);
+    res.json({ message: 'Product added successfully' });
 
-    });
+  });
 
-    // Admin
-    app.get('/users', async (req, res) => {
-      const users = await usersCollection.find({}).toArray();
-      res.json(users);
+  // Admin
+  app.get('/users', async (req, res) => {
+    const users = await usersCollection.find({}).toArray();
+    res.json(users);
 
-    });
+  });
 
-    app.post('/users', async (req, res) => {
-      const users = req.body;
-      const result = await usersCollection.insertOne(users);
-      res.json({ message: 'User added successfully' });
+  app.post('/users', async (req, res) => {
+    const users = req.body;
+    const result = await usersCollection.insertOne(users);
+    res.json({ message: 'User added successfully' });
 
-    });
+  });
 
-    app.get('/users/admin/:email', async (req, res) => {
-      const { email } = req.params;
-      const query = { email };
-      const user = await usersCollection.findOne(query);
-      res.json({ isAdmin: user?.isAdmin === 'admin' });
+  app.get('/users/admin/:email', async (req, res) => {
+    const { email } = req.params;
+    const query = { email };
+    const user = await usersCollection.findOne(query);
+    res.json({ isAdmin: user?.isAdmin === 'admin' });
 
-    });
-  }
+  });
 }
+
+run().catch(console.error);
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-run().catch(console.error);
 
 
 app.listen(port, () => {
