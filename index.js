@@ -22,7 +22,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 // Create a new MongoClient
 const client = new MongoClient(uri);
 
- function run() {
+function run() {
   try {
     client.connect();
 
@@ -31,9 +31,9 @@ const client = new MongoClient(uri);
     const usersCollection = client.db('products').collection('usersCollection');
 
     // GET categories
-    app.get('/categories',  (req, res) => {
+    app.get('/categories', async (req, res) => {
       try {
-        const categories =  servicesCategories.find({}).toArray();
+        const categories = await servicesCategories.find({}).toArray();
         res.json(categories);
       } catch (error) {
         console.error(error);
@@ -42,9 +42,9 @@ const client = new MongoClient(uri);
     });
 
     // Get all products
-    app.get('/products',  (req, res) => {
+    app.get('/products', async (req, res) => {
       try {
-        const products =  servicesProducts.find({}).toArray();
+        const products = await servicesProducts.find({}).toArray();
         res.json(products);
       } catch (error) {
         console.error(error);
@@ -53,11 +53,11 @@ const client = new MongoClient(uri);
     });
 
     // Get product by category title
-    app.get('/products/:title',  (req, res) => {
+    app.get('/products/:title', async (req, res) => {
       try {
         const { title } = req.params;
         const query = { title };
-        const products =  servicesProducts.find(query).toArray();
+        const products = await servicesProducts.find(query).toArray();
         res.json(products);
       } catch (error) {
         console.error(error);
@@ -66,11 +66,11 @@ const client = new MongoClient(uri);
     });
 
     // Get product data by id
-    app.get('/products/product/:id',  (req, res) => {
+    app.get('/products/product/:id', async (req, res) => {
       try {
         const { id } = req.params;
         const query = { _id: new ObjectId(id) };
-        const result =  servicesProducts.findOne(query);
+        const result = await servicesProducts.findOne(query);
 
         res.json(result);
       } catch (error) {
@@ -80,11 +80,11 @@ const client = new MongoClient(uri);
     });
 
     // Delete categories by id
-    app.delete('/categories/:id',  (req, res) => {
+    app.delete('/categories/:id', async (req, res) => {
       try {
         const { id } = req.params;
         const filter = { _id: new ObjectId(id) };
-        const result =  servicesCategories.deleteOne(filter);
+        const result = await servicesCategories.deleteOne(filter);
         res.json({ message: 'Category deleted successfully' });
       } catch (error) {
         console.error(error);
@@ -93,10 +93,10 @@ const client = new MongoClient(uri);
     });
 
     // Add Categories
-    app.post('/categories',  (req, res) => {
+    app.post('/categories', async (req, res) => {
       try {
         const categorie = req.body;
-        const result =  servicesCategories.insertOne(categorie);
+        const result = await servicesCategories.insertOne(categorie);
         res.json({ message: 'Category added successfully' });
       } catch (error) {
         console.error(error);
@@ -105,11 +105,11 @@ const client = new MongoClient(uri);
     });
 
     // Delete product by id
-    app.delete('/products/:id',  (req, res) => {
+    app.delete('/products/:id', async (req, res) => {
       try {
         const { id } = req.params;
         const filter = { _id: new ObjectId(id) };
-        const result =  servicesProducts.deleteOne(filter);
+        const result = await servicesProducts.deleteOne(filter);
         res.json({ message: 'Product deleted successfully' });
       } catch (error) {
         console.error(error);
@@ -118,10 +118,10 @@ const client = new MongoClient(uri);
     });
 
     // Add Product
-    app.post('/products',  (req, res) => {
+    app.post('/products', async (req, res) => {
       try {
         const product = req.body;
-        const result =  servicesProducts.insertOne(product);
+        const result = await servicesProducts.insertOne(product);
         res.json({ message: 'Product added successfully' });
       } catch (error) {
         console.error(error);
@@ -130,9 +130,9 @@ const client = new MongoClient(uri);
     });
 
     // Admin
-    app.get('/users',  (req, res) => {
+    app.get('/users', async (req, res) => {
       try {
-        const users =  usersCollection.find({}).toArray();
+        const users = await usersCollection.find({}).toArray();
         res.json(users);
       } catch (error) {
         console.error(error);
@@ -140,10 +140,10 @@ const client = new MongoClient(uri);
       }
     });
 
-    app.post('/users',  (req, res) => {
+    app.post('/users', async (req, res) => {
       try {
         const users = req.body;
-        const result =  usersCollection.insertOne(users);
+        const result = await usersCollection.insertOne(users);
         res.json({ message: 'User added successfully' });
       } catch (error) {
         console.error(error);
@@ -151,11 +151,11 @@ const client = new MongoClient(uri);
       }
     });
 
-    app.get('/users/admin/:email',  (req, res) => {
+    app.get('/users/admin/:email', async (req, res) => {
       try {
         const { email } = req.params;
         const query = { email };
-        const user =  usersCollection.findOne(query);
+        const user = await usersCollection.findOne(query);
         res.json({ isAdmin: user?.isAdmin === 'admin' });
       } catch (error) {
         console.error(error);
@@ -167,7 +167,7 @@ const client = new MongoClient(uri);
   }
 }
 
-run().catch(console.error);
+run()
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
