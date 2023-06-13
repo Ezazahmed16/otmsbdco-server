@@ -22,7 +22,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 // Create a new MongoClient
 const client = new MongoClient(uri);
 
-async function run() {
+ function run() {
   try {
     client.connect();
 
@@ -31,9 +31,9 @@ async function run() {
     const usersCollection = client.db('products').collection('usersCollection');
 
     // GET categories
-    app.get('/categories', async (req, res) => {
+    app.get('/categories',  (req, res) => {
       try {
-        const categories = await servicesCategories.find({}).toArray();
+        const categories =  servicesCategories.find({}).toArray();
         res.json(categories);
       } catch (error) {
         console.error(error);
@@ -42,9 +42,9 @@ async function run() {
     });
 
     // Get all products
-    app.get('/products', async (req, res) => {
+    app.get('/products',  (req, res) => {
       try {
-        const products = await servicesProducts.find({}).toArray();
+        const products =  servicesProducts.find({}).toArray();
         res.json(products);
       } catch (error) {
         console.error(error);
@@ -53,11 +53,11 @@ async function run() {
     });
 
     // Get product by category title
-    app.get('/products/:title', async (req, res) => {
+    app.get('/products/:title',  (req, res) => {
       try {
         const { title } = req.params;
         const query = { title };
-        const products = await servicesProducts.find(query).toArray();
+        const products =  servicesProducts.find(query).toArray();
         res.json(products);
       } catch (error) {
         console.error(error);
@@ -66,11 +66,11 @@ async function run() {
     });
 
     // Get product data by id
-    app.get('/products/product/:id', async (req, res) => {
+    app.get('/products/product/:id',  (req, res) => {
       try {
         const { id } = req.params;
         const query = { _id: new ObjectId(id) };
-        const result = await servicesProducts.findOne(query);
+        const result =  servicesProducts.findOne(query);
 
         res.json(result);
       } catch (error) {
@@ -80,11 +80,11 @@ async function run() {
     });
 
     // Delete categories by id
-    app.delete('/categories/:id', async (req, res) => {
+    app.delete('/categories/:id',  (req, res) => {
       try {
         const { id } = req.params;
         const filter = { _id: new ObjectId(id) };
-        const result = await servicesCategories.deleteOne(filter);
+        const result =  servicesCategories.deleteOne(filter);
         res.json({ message: 'Category deleted successfully' });
       } catch (error) {
         console.error(error);
@@ -93,10 +93,10 @@ async function run() {
     });
 
     // Add Categories
-    app.post('/categories', async (req, res) => {
+    app.post('/categories',  (req, res) => {
       try {
         const categorie = req.body;
-        const result = await servicesCategories.insertOne(categorie);
+        const result =  servicesCategories.insertOne(categorie);
         res.json({ message: 'Category added successfully' });
       } catch (error) {
         console.error(error);
@@ -105,11 +105,11 @@ async function run() {
     });
 
     // Delete product by id
-    app.delete('/products/:id', async (req, res) => {
+    app.delete('/products/:id',  (req, res) => {
       try {
         const { id } = req.params;
         const filter = { _id: new ObjectId(id) };
-        const result = await servicesProducts.deleteOne(filter);
+        const result =  servicesProducts.deleteOne(filter);
         res.json({ message: 'Product deleted successfully' });
       } catch (error) {
         console.error(error);
@@ -118,10 +118,10 @@ async function run() {
     });
 
     // Add Product
-    app.post('/products', async (req, res) => {
+    app.post('/products',  (req, res) => {
       try {
         const product = req.body;
-        const result = await servicesProducts.insertOne(product);
+        const result =  servicesProducts.insertOne(product);
         res.json({ message: 'Product added successfully' });
       } catch (error) {
         console.error(error);
@@ -130,9 +130,9 @@ async function run() {
     });
 
     // Admin
-    app.get('/users', async (req, res) => {
+    app.get('/users',  (req, res) => {
       try {
-        const users = await usersCollection.find({}).toArray();
+        const users =  usersCollection.find({}).toArray();
         res.json(users);
       } catch (error) {
         console.error(error);
@@ -140,10 +140,10 @@ async function run() {
       }
     });
 
-    app.post('/users', async (req, res) => {
+    app.post('/users',  (req, res) => {
       try {
         const users = req.body;
-        const result = await usersCollection.insertOne(users);
+        const result =  usersCollection.insertOne(users);
         res.json({ message: 'User added successfully' });
       } catch (error) {
         console.error(error);
@@ -151,11 +151,11 @@ async function run() {
       }
     });
 
-    app.get('/users/admin/:email', async (req, res) => {
+    app.get('/users/admin/:email',  (req, res) => {
       try {
         const { email } = req.params;
         const query = { email };
-        const user = await usersCollection.findOne(query);
+        const user =  usersCollection.findOne(query);
         res.json({ isAdmin: user?.isAdmin === 'admin' });
       } catch (error) {
         console.error(error);
@@ -165,9 +165,9 @@ async function run() {
   } catch (error) {
     console.error(error);
   }
+  run().catch(console.error);
 }
 
-run().catch(console.error);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
