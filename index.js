@@ -165,8 +165,8 @@ const client = new MongoClient(uri);
   } catch (error) {
     console.error(error);
   }
-  run().catch(console.error);
 }
+run().catch(console.error);
 
 
 app.get('/', (req, res) => {
